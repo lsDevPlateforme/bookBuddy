@@ -4,7 +4,7 @@ Instruction to create DB BookBuddy in MongoDB compass :
 
 2 - create collections of DB with Books, Rewards, Users :
 
-    Books : 
+    Books :
     
             db.books.insertOne ({
                 _id: "ObjectId()",
@@ -17,7 +17,7 @@ Instruction to create DB BookBuddy in MongoDB compass :
                 currentPage: 0
             })
 
-    Users : 
+    Users :
     
             db.users.insertOne ({
                 _id: "ObjectId()",
@@ -27,8 +27,7 @@ Instruction to create DB BookBuddy in MongoDB compass :
                 favorites: "ObjectId()",
                 rewards: "ObjectId()",
                 userCreated: "new Date()"
-    })
-
+            })
 
     Rewards :
 
