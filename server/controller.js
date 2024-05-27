@@ -1,6 +1,6 @@
-const Book = require('./models/Book');
-const User = require('./models/User');
-const Reward = require('./models/Reward');
+const Book = require('./models/books');
+const User = require('./models/users');
+// const Reward = require('./models/rewards');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
