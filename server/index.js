@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 8000;
 
 app.use(bodyParser.json());
 
-mongoose.connect('mongodb://localhost:27017/bookBudy')
+mongoose.connect('mongodb://localhost:27017/BookBuddy')
   .then(() => console.log('MongoDB connected'))
   .catch((error) => console.error('Error connecting to MongoDB:', error));
 
