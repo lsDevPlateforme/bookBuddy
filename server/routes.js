@@ -18,6 +18,6 @@ router.delete('/book/favorite/:id', auth, controller.removeBookFromFavorites);
 router.post('/addUser', controller.addUser);
 router.get('/user/:id', auth, controller.getUserById);
 router.put('/user/:id', auth, controller.updateUserPassword);
-router.post('/connexion', controller.loginUser);
+router.post('/connection', controller.loginUser);
 
 module.exports = router;
