@@ -13,7 +13,7 @@ router.put('/book/status/:id', auth, controller.updateReadingProgress);
 router.post('/book/favorite/:id', auth, controller.addBookToFavorites);
 router.delete('/book/favorite/:id', auth, controller.removeBookFromFavorites);
 
-router.post('/reward/:parameter', auth, controller.handleReward);
+// router.post('/reward/:parameter', auth, controller.handleReward);
 
 router.post('/addUser', controller.addUser);
 router.get('/user/:id', auth, controller.getUserById);
