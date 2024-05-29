@@ -1,0 +1,14 @@
+collection user à changer pour intégrer les badges en reward
+
+{
+  "_id": "",
+  "username": "",
+  "email": "",
+  "password": "",
+  "badges": {
+    "total_books": 0,
+    "completed_books": 0,
+    "total_badges": [],
+    "completed_badges": []
+  },
+}
