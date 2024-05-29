@@ -8,9 +8,42 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link } from "react-router-dom";
+import { AuthContext } from "@/context/auth.context";
+import { client } from "@/utils/http";
+import { useContext } from "react";
+import { useMutation } from "react-query";
+import { Link, useNavigate } from "react-router-dom";
 
 export const SignupForm = () => {
+  const navigate = useNavigate();
+  const { login, authError } = useContext(AuthContext);
+  const mutation = useMutation(
+    (user) =>
+      client("http://localhost:8000/api/addUser", {
+        method: "POST",
+        data: user,
+      }),
+    {
+      onSuccess: (data) => {
+        login(data.token);
+        if (!authError) {
+          navigate("/user");
+        }
+      },
+    }
+  );
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const newUser = {
+      username: formData.get("username"),
+      email: formData.get("email"),
+      password: formData.get("password"),
+    };
+    mutation.mutate(newUser);
+  };
+
   return (
     <div className="h-screen flex justify-center items-center">
       <Card className="mx-auto max-w-sm">
@@ -21,20 +54,22 @@ export const SignupForm = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4">
-            <div className="grid grid-cols-2 gap-4">
+          <form onSubmit={handleSubmit} className="grid gap-4">
+            <div className="grid gap-4">
               <div className="grid gap-2">
-                <Label htmlFor="first-name">First name</Label>
-                <Input id="first-name" placeholder="Max" required />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="last-name">Last name</Label>
-                <Input id="last-name" placeholder="Robinson" required />
+                <Label htmlFor="username">Username</Label>
+                <Input
+                  name="username"
+                  id="username"
+                  placeholder="Robinson"
+                  required
+                />
               </div>
             </div>
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
+                name="email"
                 id="email"
                 type="email"
                 placeholder="m@example.com"
@@ -43,15 +78,12 @@ export const SignupForm = () => {
             </div>
             <div className="grid gap-2">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" />
+              <Input name="password" id="password" type="password" />
             </div>
             <Button type="submit" className="w-full">
               Create an account
             </Button>
-            <Button variant="outline" className="w-full">
-              Sign up with GitHub
-            </Button>
-          </div>
+          </form>
           <div className="mt-4 text-center text-sm">
             Already have an account?{" "}
             <Link to="/auth/login" className="underline">

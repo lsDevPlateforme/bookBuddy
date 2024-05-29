@@ -8,9 +8,41 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link } from "react-router-dom";
+import { AuthContext } from "@/context/auth.context";
+import { client } from "@/utils/http";
+import { useContext } from "react";
+import { useMutation } from "react-query";
+import { Link, useNavigate } from "react-router-dom";
 
 export const LoginFormPage = () => {
+  const navigate = useNavigate();
+  const { login, authError } = useContext(AuthContext);
+  const mutation = useMutation(
+    (user) =>
+      client("http://localhost:8000/api/connexion", {
+        method: "POST",
+        data: user,
+      }),
+    {
+      onSuccess: (data) => {
+        login(data.token);
+        if (!authError) {
+          navigate("/user");
+        }
+      },
+    }
+  );
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const newUser = {
+      email: formData.get("email"),
+      password: formData.get("password"),
+    };
+    mutation.mutate(newUser);
+  };
+
   return (
     <div className="h-screen flex justify-center items-center">
       <Card className="mx-auto max-w-sm">
@@ -21,12 +53,13 @@ export const LoginFormPage = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4">
+          <form onSubmit={handleSubmit} className="grid gap-4">
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="email"
+                name="email"
                 placeholder="m@example.com"
                 required
               />
@@ -41,7 +74,7 @@ export const LoginFormPage = () => {
                   Forgot your password?
                 </Link>
               </div>
-              <Input id="password" type="password" required />
+              <Input name="password" id="password" type="password" required />
             </div>
             <Button type="submit" className="w-full">
               Login
@@ -49,7 +82,7 @@ export const LoginFormPage = () => {
             <Button variant="outline" className="w-full">
               Login with Google
             </Button>
-          </div>
+          </form>
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}
             <Link to="/auth/signup" className="underline">

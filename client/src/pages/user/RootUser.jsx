@@ -1,12 +1,5 @@
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -27,13 +20,12 @@ import {
 import { Link, NavLink, Outlet } from "react-router-dom";
 
 import Logo from "@/assets/icon.png";
+import { AuthContext } from "@/context/auth.context";
+import { useContext } from "react";
 
 const NavigationLinks = ({ style, styleActive }) => (
   <>
-    <NavLink
-      to="dashbord"
-      className={({ isActive }) => (isActive ? styleActive : style)}
-    >
+    <NavLink to="/user" className={style}>
       <Home className="h-4 w-4" />
       Dashboard
     </NavLink>
@@ -72,21 +64,6 @@ const Sidebar = ({ style, styleActive }) => (
           <NavigationLinks style={style} styleActive={styleActive} />
         </nav>
       </div>
-      <div className="mt-auto p-4">
-        <Card x-chunk="dashboard-02-chunk-0">
-          <CardHeader className="p-2 pt-0 md:p-4">
-            <CardTitle>Upgrade to Pro</CardTitle>
-            <CardDescription>
-              Unlock all features and get unlimited access to our support team.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="p-2 pt-0 md:p-4 md:pt-0">
-            <Button size="sm" className="w-full">
-              Upgrade
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
     </div>
   </div>
 );
@@ -101,35 +78,18 @@ const MobileNav = ({ style, styleActive }) => (
     </SheetTrigger>
     <SheetContent side="left" className="flex flex-col">
       <nav className="grid gap-2 text-lg font-medium">
-        <Link
-          href="#"
-          className="flex items-center gap-2 text-lg font-semibold"
-        >
+        <Link to="/" className="flex items-center gap-2 text-lg font-semibold">
           <img width="50" height="50" src={Logo} alt="logo app" />
           <span>Book Buddy</span>
         </Link>
         <NavigationLinks style={style} styleActive={styleActive} />
       </nav>
-      <div className="mt-auto">
-        <Card>
-          <CardHeader>
-            <CardTitle>Upgrade to Pro</CardTitle>
-            <CardDescription>
-              Unlock all features and get unlimited access to our support team.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button size="sm" className="w-full">
-              Upgrade
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
     </SheetContent>
   </Sheet>
 );
 
 export const RootUserLayout = () => {
+  const { logout } = useContext(AuthContext);
   const style =
     "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary";
   const styleActive =
@@ -166,7 +126,9 @@ export const RootUserLayout = () => {
               </DropdownMenuItem>
               <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => logout()}>
+                Logout
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </header>

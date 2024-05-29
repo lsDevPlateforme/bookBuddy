@@ -1,5 +1,7 @@
+import { getSession } from "@/utils/auth";
 import { client } from "@/utils/http";
 import { useState } from "react";
+import { useMutation, useQueryClient } from "react-query";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button, buttonVariants } from "../ui/button";
 import {
@@ -9,18 +11,49 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { Form } from "../ui/form";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import { ScrollArea } from "../ui/scroll-area";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 import { Textarea } from "../ui/textarea";
 
 export const ModalAddBook = () => {
+  const session = getSession();
+  if (!session) {
+    throw new Error("L'utilisateur n'est pas connecter");
+  }
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: (newBook) =>
+      client("http://localhost:8000/api/addBook", {
+        data: newBook,
+        method: "POST",
+        session: session,
+      }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries("myBook");
+    },
+    onError: (err) => {
+      console.error(err);
+    },
+  });
+
   const [results, setResults] = useState([]);
   const [autocoplite, setAutocoplite] = useState(false);
   const [value, setValue] = useState({
     title: "",
     description: "",
     imageLinks: "https://fakeimg.pl/100x200",
+    pageCount: 1,
+    authors: [],
+    categories: [],
   });
 
   const handleClickAutocomplite = (infoBook) => {
@@ -29,6 +62,9 @@ export const ModalAddBook = () => {
       description: infoBook.description,
       imageLinks:
         infoBook?.imageLinks?.smallThumbnail || "https://fakeimg.pl/100x200",
+      pageCount: Number(infoBook.pageCount),
+      authors: infoBook.authors,
+      categories: infoBook.categories,
     });
   };
 
@@ -38,7 +74,7 @@ export const ModalAddBook = () => {
     } else {
       setTimeout(() => {
         setAutocoplite(false);
-      }, 500);
+      }, 200);
     }
   };
 
@@ -49,7 +85,6 @@ export const ModalAddBook = () => {
       const url = `https://www.googleapis.com/books/v1/volumes?q=intitle:${query}&maxResults=5&key=AIzaSyAmJjDBjk107C8ol7r8VDvgTsdkOitLJA0`;
       try {
         const data = await client(url);
-        console.log(data.items[0].volumeInfo);
         setResults(data.items || []);
       } catch (e) {
         console.error(e);
@@ -57,6 +92,21 @@ export const ModalAddBook = () => {
     } else {
       setResults([]);
     }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const dataForm = new FormData(e.target);
+    const newBook = {
+      title: dataForm.get("title"),
+      author: dataForm.get("author"),
+      image: value.imageLinks,
+      status: dataForm.get("status"),
+      numberOfPages: dataForm.get("pages"),
+      category: dataForm.get("category"),
+    };
+    mutation.mutate(newBook);
   };
 
   return (
@@ -69,41 +119,45 @@ export const ModalAddBook = () => {
           <DialogHeader>
             <DialogTitle>Ajouter un nouveau livre</DialogTitle>
           </DialogHeader>
-          <Form>
+          <form onSubmit={handleSubmit}>
             <div className="relative">
               <Label>Titre du livre</Label>
               <Input
                 type="text"
+                name="title"
                 value={value.title}
                 onChange={handleInputChange}
                 onFocus={() => handleAutocomplite(true)}
                 onBlur={() => handleAutocomplite(false)}
               />
               {autocoplite && results.length > 0 && (
-                <div className="cursor-pointer absolute bg-white border border-gray-300 mt-2 w-full z-10">
-                  {results.map((book) => {
-                    let imgSrc = "";
-                    if (!book.volumeInfo?.imageLinks?.smallThumbnail) {
-                      imgSrc = "https://fakeimg.pl/20x50";
-                    } else {
-                      imgSrc = book.volumeInfo?.imageLinks?.smallThumbnail;
-                    }
-                    return (
-                      <div
-                        className="flex justify-between p-2  hover:bg-primary"
-                        key={book.id}
-                        onClick={() => handleClickAutocomplite(book.volumeInfo)}
-                      >
-                        <p>{book.volumeInfo.title}</p>
-                        <Avatar className="h-10 w-10 rounded-lg">
-                          <AvatarImage src={imgSrc} />
-                          <AvatarFallback>
-                            {book.volumeInfo.title[0]}
-                          </AvatarFallback>
-                        </Avatar>
-                      </div>
-                    );
-                  })}
+                <div className="rounded-b-md cursor-pointer absolute bg-background border border-gray-300 w-full z-10">
+                  {results.length >= 0 &&
+                    results.map((book) => {
+                      let imgSrc = "";
+                      if (!book.volumeInfo?.imageLinks?.smallThumbnail) {
+                        imgSrc = "https://fakeimg.pl/20x50";
+                      } else {
+                        imgSrc = book.volumeInfo?.imageLinks?.smallThumbnail;
+                      }
+                      return (
+                        <div
+                          className="flex justify-between items-center p-2  hover:bg-primary"
+                          key={book.id}
+                          onClick={() =>
+                            handleClickAutocomplite(book.volumeInfo)
+                          }
+                        >
+                          <p>{book.volumeInfo.title}</p>
+                          <Avatar className="h-10 w-10 rounded-lg">
+                            <AvatarImage src={imgSrc} />
+                            <AvatarFallback>
+                              {book.volumeInfo.title[0]}
+                            </AvatarFallback>
+                          </Avatar>
+                        </div>
+                      );
+                    })}
                 </div>
               )}
             </div>
@@ -113,15 +167,60 @@ export const ModalAddBook = () => {
                 <AvatarFallback>{value.title[0]}</AvatarFallback>
               </Avatar>
               <div>
-                <Button>Change Avatar</Button>
+                <Input
+                  name="img"
+                  className={buttonVariants({ variant: "default" })}
+                  type="file"
+                />
                 <p className="mt-2 text-sm">JPG, GIF or PNG. 1MB max.</p>
               </div>
             </div>
-            <div>
-              <Label>Description:</Label>
-              <Textarea defaultValue={value.description} rows="6" />
-            </div>
-          </Form>
+            <ScrollArea className="h-[300px] p-4 rounded-md border">
+              <div>
+                <Label>Category:</Label>
+                <Input
+                  name="category"
+                  defaultValue={value.categories.join(", ")}
+                />
+              </div>
+              <div>
+                <Label>Authors:</Label>
+                <Input name="author" defaultValue={value.authors.join(", ")} />
+              </div>
+              <div>
+                <Label>Description:</Label>
+                <Textarea name="" defaultValue={value.description} rows="6" />
+              </div>
+              <div>
+                <Label>Nombre de page:</Label>
+                <Input
+                  name="pages"
+                  type="number"
+                  value={value.pageCount}
+                  onChange={(e) =>
+                    setValue({ ...value, pageCount: Number(e.target.value) })
+                  }
+                />
+              </div>
+              <div>
+                <Label>Etats:</Label>
+                <Select name="status" defaultValue="fini">
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="à lire">📚 A lire</SelectItem>
+                    <SelectItem value="en cours de lecture">
+                      📖 En cours
+                    </SelectItem>
+                    <SelectItem value="fini">✅ Fini</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </ScrollArea>
+            <Button>Ajouter</Button>
+            {mutation.isSuccess ? <p>Livre ajouter !</p> : null}
+          </form>
         </DialogContent>
       </Dialog>
     </>

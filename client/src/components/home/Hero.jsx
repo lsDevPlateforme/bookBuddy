@@ -1,3 +1,4 @@
+import TypingAnimation from "../magicui/typing-animation";
 import { buttonVariants } from "../ui/button";
 
 export const Hero = () => {
@@ -5,13 +6,7 @@ export const Hero = () => {
     <section className="bg-gray-50" id="home">
       <div className="mx-auto max-w-screen-xl px-4 py-32 lg:flex lg:h-screen lg:items-center">
         <div className="mx-auto max-w-xl text-center">
-          <h1 className="text-3xl font-extrabold sm:text-5xl">
-            Understand User Flow.
-            <strong className="font-extrabold text-primary sm:block">
-              {" "}
-              Increase Conversion.{" "}
-            </strong>
-          </h1>
+          <TypingAnimation text="Welcome in your own library" duration={100} />
 
           <p className="mt-4 sm:text-xl/relaxed">
             Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nesciunt

@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "react-query";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { AuthProvider } from "./context/auth.context";
 import { ErrorPage } from "./pages/Error";
 import { HomePage } from "./pages/Home";
 import { LoginFormPage } from "./pages/LoginForm";
@@ -10,8 +11,17 @@ import { DashboardPage } from "./pages/user/Dashboard";
 import { FavoritePage } from "./pages/user/Favorite";
 import { MyBookPage } from "./pages/user/MyBook";
 import { RootUserLayout } from "./pages/user/RootUser";
+import { checkAuthLoader } from "./utils/auth";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 90000,
+      retry: false,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const router = createBrowserRouter([
   {
@@ -28,8 +38,9 @@ const router = createBrowserRouter([
     path: "/user",
     element: <RootUserLayout />,
     errorElement: <ErrorPage />,
+    loader: checkAuthLoader,
     children: [
-      { path: "dashbord", element: <DashboardPage /> },
+      { path: "", element: <DashboardPage /> },
       { path: "my-book", element: <MyBookPage /> },
       { path: "favorite", element: <FavoritePage /> },
       { path: "account", element: <AccountPage /> },
@@ -40,7 +51,9 @@ const router = createBrowserRouter([
 export const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router}></RouterProvider>;
+      <AuthProvider>
+        <RouterProvider router={router}></RouterProvider>;
+      </AuthProvider>
     </QueryClientProvider>
   );
 };

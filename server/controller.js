@@ -1,12 +1,13 @@
-const Book = require('./models/books');
-const User = require('./models/users');
+const Book = require("./models/books");
+const User = require("./models/users");
 // const Reward = require('./models/rewards');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 exports.addBook = async (req, res) => {
   try {
-    const book = new Book({ ...req.body, user: req.user._id });
+    const book = new Book({ ...req.body, user_id: req.user._id });
+    console.log({ ...req.body, user_id: req.user._id });
     await book.save();
     res.status(201).send(book);
   } catch (error) {
@@ -16,7 +17,7 @@ exports.addBook = async (req, res) => {
 
 exports.getAllBooks = async (req, res) => {
   try {
-    const books = await Book.find({ user: req.user._id });
+    const books = await Book.find({ user_id: req.user._id });
     res.status(200).send(books);
   } catch (error) {
     res.status(500).send(error);
@@ -114,7 +115,7 @@ exports.addUser = async (req, res) => {
     const user = new User(req.body);
     user.password = await bcrypt.hash(user.password, 8);
     await user.save();
-    const token = jwt.sign({ _id: user._id }, 'votre_secret');
+    const token = jwt.sign({ _id: user._id }, "votre_secret");
     res.status(201).send({ user, token });
   } catch (error) {
     res.status(400).send(error);
@@ -123,7 +124,7 @@ exports.addUser = async (req, res) => {
 
 exports.getUserById = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.user._id);
     if (!user) {
       return res.status(404).send();
     }
@@ -151,15 +152,15 @@ exports.loginUser = async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
-      return res.status(400).send({ error: 'Authentification invalide' });
+      return res.status(400).send({ error: "Authentification invalide" });
     }
 
     const isMatch = await bcrypt.compare(req.body.password, user.password);
     if (!isMatch) {
-      return res.status(400).send({ error: 'Authentification invalide' });
+      return res.status(400).send({ error: "Authentification invalide" });
     }
 
-    const token = jwt.sign({ _id: user._id }, 'votre_secret');
+    const token = jwt.sign({ _id: user._id }, "votre_secret");
     res.send({ user, token });
   } catch (error) {
     res.status(500).send(error);

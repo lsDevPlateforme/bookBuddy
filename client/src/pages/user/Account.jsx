@@ -3,8 +3,35 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { getSession } from "@/utils/auth";
+import { client } from "@/utils/http";
+import { useQuery } from "react-query";
 
 export const AccountPage = () => {
+  const session = getSession();
+  if (!session) {
+    throw new Error("L'utilisateur n'est pas connecter");
+  }
+  // const queryClient = useQueryClient()
+
+  const { isPending, isError, data, error } = useQuery({
+    queryKey: ["profile"],
+    queryFn: () =>
+      client("http://localhost:8000/api/user", { session: session }),
+  });
+
+  if (isPending) {
+    return <span>Loading...</span>;
+  }
+
+  if (isError) {
+    return <span>Error: {error.message}</span>;
+  }
+
+  if (!data) {
+    return <span>No data available</span>;
+  }
+
   return (
     <div>
       <div className="max-w-7xl grid grid-cols-1 px-4 py-16 gap-5 lg:px-8 md:grid-cols-3 sm:px-6">
@@ -34,11 +61,11 @@ export const AccountPage = () => {
             </div>
             <div className="col-span-full">
               <Label>Email address</Label>
-              <Input />
+              <Input defaultValue={data.email} />
             </div>
             <div className="col-span-full">
               <Label>Username</Label>
-              <Input />
+              <Input defaultValue={data.username} />
             </div>
           </div>
           <div className="flex mt-4">
