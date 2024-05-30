@@ -1,0 +1,40 @@
+Instruction to create DB BookBuddy in MongoDB compass :
+
+1 - create DB : use BookBuddy
+
+2 - create collections of DB with Books, Rewards, Users :
+
+    Books :
+    
+            db.books.insertOne ({
+                _id: "ObjectId()",
+                title: `" "`,
+                author: `" "`,
+                image: `" "`,
+                status: `" "`,
+                numberOfPages: 0,
+                category: `" "`,
+                currentPage: 0
+            })
+
+    Users :
+    
+            db.users.insertOne ({
+                _id: "ObjectId()",
+                username: `" "`,
+                email: `" "`,
+                password: `" "`,
+                favorites: "ObjectId()",
+                rewards: "ObjectId()",
+                userCreated: "new Date()"
+            })
+
+    Rewards :
+
+            db.rewards.insertOne ({
+                _id: "ObjectId()",
+                type: `" "`,
+                name: `" "`,
+                description: `" "`,
+                achieved: "new Date()"
+            })
