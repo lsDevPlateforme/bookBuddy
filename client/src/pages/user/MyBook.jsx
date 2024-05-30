@@ -1,5 +1,6 @@
 import { CardBook } from "@/components/book/CardBook";
 import { HeaderBook } from "@/components/book/HeaderBook";
+import { ModalBook } from "@/components/book/ModalBook";
 import { Separator } from "@/components/ui/separator";
 import { getSession } from "@/utils/auth";
 import { client } from "@/utils/http";
@@ -47,7 +48,9 @@ export const MyBookPage = () => {
       <Separator />
       <div className="flex gap-4 flex-wrap">
         {data.map((book) => (
-          <CardBook key={book._id} img={book.image} />
+          <ModalBook key={book._id} book={book}>
+            <CardBook img={book.image} />
+          </ModalBook>
         ))}
       </div>
     </>

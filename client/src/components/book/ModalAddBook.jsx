@@ -102,6 +102,7 @@ export const ModalAddBook = () => {
       title: dataForm.get("title"),
       author: dataForm.get("author"),
       image: value.imageLinks,
+      description: dataForm.get("description"),
       status: dataForm.get("status"),
       numberOfPages: dataForm.get("pages"),
       category: dataForm.get("category"),
@@ -189,7 +190,11 @@ export const ModalAddBook = () => {
               </div>
               <div>
                 <Label>Description:</Label>
-                <Textarea name="" defaultValue={value.description} rows="6" />
+                <Textarea
+                  name="description"
+                  defaultValue={value.description}
+                  rows="6"
+                />
               </div>
               <div>
                 <Label>Nombre de page:</Label>
