@@ -4,6 +4,7 @@ const bookSchema = new mongoose.Schema({
   title: { type: String, required: true },
   author: { type: String, required: true },
   image: { type: String },
+  description: { type: String },
   status: {
     type: String,
     enum: ["à lire", "en cours de lecture", "fini"],
