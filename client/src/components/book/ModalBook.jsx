@@ -40,10 +40,10 @@ export const ModalBook = ({ children, book }) => {
               </SelectContent>
             </Select>
             <p>
-              <strong>Author:</strong> {book.author}
+              <strong>Auteur:</strong> {book.author}
             </p>
             <p>
-              <strong>Nombre de Page:</strong> {book.numberOfPages}
+              <strong>Nombre de Pages:</strong> {book.numberOfPages}
             </p>
             <h3 className="font-bold">Description</h3>
             <ScrollArea className="h-36">
