@@ -32,14 +32,14 @@ const NavigationLinks = ({ style, styleActive }) => (
       className={({ isActive }) => (isActive ? styleActive : style)}
     >
       <BookOpen className="h-4 w-4" />
-      My Book
+      My Books
     </NavLink>
     <NavLink
       to="favorite"
       className={({ isActive }) => (isActive ? styleActive : style)}
     >
       <StarIcon className="h-4 w-4" />
-      Favorite
+      Favorites
     </NavLink>
   </>
 );
