@@ -17,11 +17,9 @@ import {
   Search,
   StarIcon,
 } from "lucide-react";
-import { Link, NavLink, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 
 import Logo from "@/assets/icon.png";
-import { AuthContext } from "@/context/auth.context";
-import { useContext } from "react";
 
 const NavigationLinks = ({ style, styleActive }) => (
   <>
@@ -34,14 +32,14 @@ const NavigationLinks = ({ style, styleActive }) => (
       className={({ isActive }) => (isActive ? styleActive : style)}
     >
       <BookOpen className="h-4 w-4" />
-      My Books
+      My Book
     </NavLink>
     <NavLink
       to="favorite"
       className={({ isActive }) => (isActive ? styleActive : style)}
     >
       <StarIcon className="h-4 w-4" />
-      Favorites
+      Favorite
     </NavLink>
   </>
 );
@@ -89,7 +87,11 @@ const MobileNav = ({ style, styleActive }) => (
 );
 
 export const RootUserLayout = () => {
-  const { logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const logout = () => {
+    localStorage.removeItem("jwtToken");
+    navigate("/");
+  };
   const style =
     "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary";
   const styleActive =

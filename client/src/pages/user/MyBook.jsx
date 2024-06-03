@@ -40,7 +40,11 @@ export const MyBookPage = () => {
       <div className="flex gap-4 flex-wrap">
         {data.map((book) => {
           if (book.status === "en cours de lecture") {
-            return <CardBook key={book._id} img={book.image} />;
+            return (
+              <ModalBook key={book._id} book={book}>
+                <CardBook img={book.image} />
+              </ModalBook>
+            );
           }
         })}
       </div>

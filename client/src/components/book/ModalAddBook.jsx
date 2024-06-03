@@ -178,14 +178,14 @@ export const ModalAddBook = () => {
             </div>
             <ScrollArea className="h-[300px] p-4 rounded-md border">
               <div>
-                <Label>Categorie:</Label>
+                <Label>Category:</Label>
                 <Input
                   name="category"
                   defaultValue={value.categories.join(", ")}
                 />
               </div>
               <div>
-                <Label>Auteur:</Label>
+                <Label>Authors:</Label>
                 <Input name="author" defaultValue={value.authors.join(", ")} />
               </div>
               <div>
@@ -197,7 +197,7 @@ export const ModalAddBook = () => {
                 />
               </div>
               <div>
-                <Label>Nombre de pages:</Label>
+                <Label>Nombre de page:</Label>
                 <Input
                   name="pages"
                   type="number"
@@ -208,7 +208,7 @@ export const ModalAddBook = () => {
                 />
               </div>
               <div>
-                <Label>Etat:</Label>
+                <Label>Etats:</Label>
                 <Select name="status" defaultValue="fini">
                   <SelectTrigger>
                     <SelectValue />
@@ -224,7 +224,7 @@ export const ModalAddBook = () => {
               </div>
             </ScrollArea>
             <Button>Ajouter</Button>
-            {mutation.isSuccess ? <p>Livre ajouté !</p> : null}
+            {mutation.isSuccess ? <p>Livre ajouter !</p> : null}
           </form>
         </DialogContent>
       </Dialog>

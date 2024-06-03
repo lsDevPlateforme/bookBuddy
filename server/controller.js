@@ -7,7 +7,6 @@ const jwt = require("jsonwebtoken");
 exports.addBook = async (req, res) => {
   try {
     const book = new Book({ ...req.body, user_id: req.user._id });
-    console.log({ ...req.body, user_id: req.user._id });
     await book.save();
     res.status(201).send(book);
   } catch (error) {
@@ -48,9 +47,11 @@ exports.getBooksByFilter = async (req, res) => {
 
 exports.updateBookStatus = async (req, res) => {
   try {
+    const bookUpdate = req.body;
+    console.log(bookUpdate);
     const book = await Book.findOneAndUpdate(
       { _id: req.params.id, user: req.user._id },
-      { status: req.body.status },
+      { bookUpdate },
       { new: true }
     );
     if (!book) {
@@ -136,7 +137,7 @@ exports.getUserById = async (req, res) => {
 
 exports.updateUserPassword = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.user._id);
     if (!user) {
       return res.status(404).send();
     }

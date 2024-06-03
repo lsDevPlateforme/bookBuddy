@@ -1,11 +1,6 @@
 // src/context/AuthContext.js
 import { createContext, useEffect, useState } from "react";
-import { redirect } from "react-router-dom";
-import {
-  getSessionRequired,
-  logout as removeSession,
-  setSession,
-} from "../utils/auth";
+import { getSessionRequired, setSession } from "../utils/auth";
 
 export const AuthContext = createContext();
 
@@ -23,18 +18,11 @@ export const AuthProvider = ({ children }) => {
       setSession(token);
     } catch (error) {
       setAuthError(error.message);
-      removeSession();
     }
   };
 
-  const logout = () => {
-    removeSession();
-    setIsAuthenticated(false);
-    return redirect("/auth/login");
-  };
-
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout, authError }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, authError }}>
       {children}
     </AuthContext.Provider>
   );

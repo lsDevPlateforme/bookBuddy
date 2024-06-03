@@ -8,48 +8,48 @@ export const DashboardPage = () => {
           <div className="grid gap-4">
             <Card>
               <CardHeader>
-                <CardTitle>Livres lus</CardTitle>
+                <CardTitle>Livres lu</CardTitle>
               </CardHeader>
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle>Livres totaux</CardTitle>
+                <CardTitle>Livres total</CardTitle>
               </CardHeader>
             </Card>
           </div>
           <Card>
             <CardHeader>
-              <CardTitle>Dernier Favori</CardTitle>
+              <CardTitle>Dernier Favorie</CardTitle>
             </CardHeader>
           </Card>
         </div>
         <Card>
           <CardHeader>
-            <CardTitle>Mon activité</CardTitle>
+            <CardTitle>Mon activiter</CardTitle>
           </CardHeader>
         </Card>
       </div>
       <div className="grid grid-cols-2 gap-4 h-1/3 max-lg:grid-cols-1">
         <Card>
           <CardHeader>
-            <CardTitle>Mon activité</CardTitle>
+            <CardTitle>Mon activiter</CardTitle>
           </CardHeader>
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Mon activité</CardTitle>
+            <CardTitle>Mon activiter</CardTitle>
           </CardHeader>
         </Card>
       </div>
       <div className="grid grid-cols-2 gap-4 h-1/3 max-lg:grid-cols-1">
         <Card>
           <CardHeader>
-            <CardTitle>Mon activité</CardTitle>
+            <CardTitle>Mon activiter</CardTitle>
           </CardHeader>
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Mon activité</CardTitle>
+            <CardTitle>Mon activiter</CardTitle>
           </CardHeader>
         </Card>
       </div>

@@ -5,7 +5,8 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { getSession } from "@/utils/auth";
 import { client } from "@/utils/http";
-import { useQuery } from "react-query";
+import { useRef } from "react";
+import { useMutation, useQuery } from "react-query";
 
 export const AccountPage = () => {
   const session = getSession();
@@ -13,12 +14,36 @@ export const AccountPage = () => {
     throw new Error("L'utilisateur n'est pas connecter");
   }
   // const queryClient = useQueryClient()
+  const passwordFormRef = useRef(null);
 
   const { isPending, isError, data, error } = useQuery({
     queryKey: ["profile"],
     queryFn: () =>
       client("http://localhost:8000/api/user", { session: session }),
   });
+
+  const mutation = useMutation({
+    mutationFn: (newPassword) =>
+      client("http://localhost:8000/api/user", {
+        data: newPassword,
+        method: "PUT",
+        session: session,
+      }),
+    onSuccess: () => {
+      alert("Password changé");
+      passwordFormRef.current.reset();
+    },
+  });
+
+  const handleSubmitNewPassword = (e) => {
+    e.preventDefault();
+
+    const dataForm = new FormData(e.target);
+    const newPassword = {
+      password: dataForm.get("password"),
+    };
+    mutation.mutate(newPassword);
+  };
 
   if (isPending) {
     return <span>Loading...</span>;
@@ -79,7 +104,11 @@ export const AccountPage = () => {
           <h2 className="leading-7 font-semibold">Change password</h2>
           <p>Update your password associated with your account.</p>
         </div>
-        <form action="" className="col-span-2">
+        <form
+          ref={passwordFormRef}
+          onSubmit={handleSubmitNewPassword}
+          className="col-span-2"
+        >
           <div className="grid grid-cols-1 gap-4 sm:max-w-xl sm:grid-cols-6">
             <div className="col-span-full">
               <Label>Current password</Label>
@@ -91,11 +120,11 @@ export const AccountPage = () => {
             </div>
             <div className="col-span-full">
               <Label>Confirm password</Label>
-              <Input />
+              <Input type="text" name="password" />
             </div>
           </div>
           <div className="flex mt-4">
-            <Button>Save</Button>
+            <Button type="submit">Save</Button>
           </div>
         </form>
       </div>

@@ -30,6 +30,10 @@ export const LoginFormPage = () => {
           navigate("/user");
         }
       },
+      onError: () => {
+        alert("Mot de passe ou email incorect");
+        navigate("/auth/login");
+      },
     }
   );
 

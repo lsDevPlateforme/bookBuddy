@@ -17,7 +17,7 @@ router.delete("/book/favorite/:id", auth, controller.removeBookFromFavorites);
 
 router.post("/addUser", controller.addUser);
 router.get("/user", auth, controller.getUserById);
-router.put("/user/:id", auth, controller.updateUserPassword);
+router.put("/user", auth, controller.updateUserPassword);
 router.post("/connexion", controller.loginUser);
 
 module.exports = router;
